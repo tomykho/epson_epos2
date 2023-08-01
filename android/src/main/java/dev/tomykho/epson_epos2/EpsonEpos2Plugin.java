@@ -2,8 +2,11 @@ package dev.tomykho.epson_epos2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.epson.epos2.Epos2Exception;
 import com.epson.epos2.discovery.DeviceInfo;
@@ -56,6 +59,11 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     }
 
     private void startDiscovery(MethodCall call, Result result) {
+        try {
+            Discovery.stop();
+        } catch (Epos2Exception e) {
+            e.printStackTrace();
+        }
         FilterOption filterOption = new FilterOption();
         filterOption.setDeviceType(Discovery.TYPE_PRINTER);
         filterOption.setEpsonFilter(Discovery.FILTER_NAME);
@@ -63,46 +71,6 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         try {
             Discovery.start(context, filterOption, mDiscoveryListener);
         } catch (Epos2Exception e) {
-            if(e.getErrorStatus() == Epos2Exception.ERR_CONNECT)
-            {
-                Log.e("testing", "error connect");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_ALREADY_OPENED)
-            {
-                Log.e("testing", "already open");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_ALREADY_USED)
-            {
-                Log.e("testing", "already used");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_BOX_CLIENT_OVER)
-            {
-                Log.e("testing", "box client over");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_BOX_COUNT_OVER)
-            {
-                Log.e("testing", "count over");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_DISCONNECT)
-            {
-                Log.e("testing", "disconnect");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_FAILURE)
-            {
-                Log.e("testing", "failure");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_ILLEGAL)
-            {
-                Log.e("testing", "illegal");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_IN_USE)
-            {
-                Log.e("testing", "in use");
-            }
-            if(e.getErrorStatus() == Epos2Exception.ERR_MEMORY)
-            {
-                Log.e("testing", "memory");
-            }
             e.printStackTrace();
         }
         result.success(null);
@@ -112,7 +80,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         try {
             Discovery.stop();
         } catch (Epos2Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         result.success(null);
     }
@@ -125,10 +93,10 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     private final DiscoveryListener mDiscoveryListener = new DiscoveryListener() {
         @Override
         public void onDiscovery(final DeviceInfo deviceInfo) {
-            HashMap<String, String> map = new HashMap<>();
+            final HashMap<String, String> map = new HashMap<>();
             map.put("deviceName", deviceInfo.getDeviceName());
             map.put("target", deviceInfo.getTarget());
-            channel.invokeMethod("onDiscovery", map);
+            new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onDiscovery", map));
         }
     };
 }
