@@ -13,6 +13,7 @@ import com.epson.epos2.discovery.DeviceInfo;
 import com.epson.epos2.discovery.Discovery;
 import com.epson.epos2.discovery.DiscoveryListener;
 import com.epson.epos2.discovery.FilterOption;
+import com.epson.epos2.printer.Printer;
 
 import java.util.HashMap;
 
@@ -44,6 +45,11 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     }
 
     @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        channel.setMethodCallHandler(null);
+    }
+
+    @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "startDiscovery":
@@ -52,6 +58,9 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
             case "stopDiscovery":
                 stopDiscovery(call, result);
                 break;
+            case "print":
+                print(call, result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -59,11 +68,6 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     }
 
     private void startDiscovery(MethodCall call, Result result) {
-        try {
-            Discovery.stop();
-        } catch (Epos2Exception e) {
-            e.printStackTrace();
-        }
         FilterOption filterOption = new FilterOption();
         filterOption.setDeviceType(Discovery.TYPE_PRINTER);
         filterOption.setEpsonFilter(Discovery.FILTER_NAME);
@@ -85,17 +89,17 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         result.success(null);
     }
 
-    @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
+    private void print(MethodCall call, Result result) {
+        result.success(null);
     }
 
     private final DiscoveryListener mDiscoveryListener = new DiscoveryListener() {
         @Override
         public void onDiscovery(final DeviceInfo deviceInfo) {
-            final HashMap<String, String> map = new HashMap<>();
+            final HashMap<String, Object> map = new HashMap<>();
             map.put("deviceName", deviceInfo.getDeviceName());
             map.put("target", deviceInfo.getTarget());
+            map.put("deviceType", deviceInfo.getDeviceType());
             new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onDiscovery", map));
         }
     };
