@@ -21,7 +21,7 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
     switch (call.method) {
       case "onDiscovery":
         try {
-          Map<String, dynamic> map = Map<String, String>.from(call.arguments);
+          Map<String, dynamic> map = Map.from(call.arguments);
           var deviceInfo = DeviceInfo.fromJson(map);
           _discoveryCallback?.call(deviceInfo);
         } catch (e) {
