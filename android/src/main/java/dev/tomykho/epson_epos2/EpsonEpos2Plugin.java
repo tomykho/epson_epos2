@@ -226,7 +226,8 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
                 mPrinter.setConnectionEventListener(mConnectionListener);
                 mPrinter.startMonitor();
             } catch (Epos2Exception e) {
-                throw new RuntimeException(e);
+                result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
+                return;
             }
         }
         result.success(null);
