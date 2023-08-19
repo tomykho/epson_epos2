@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:epson_epos2/callbacks.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -58,6 +60,10 @@ abstract class EpsonEpos2Platform extends PlatformInterface {
 
   Future<void> disconnect() {
     throw UnimplementedError('disconnect() has not been implemented.');
+  }
+
+  Future<void> addCommand(Uint8List data) {
+    throw UnimplementedError('addCommand() has not been implemented.');
   }
 
   Future<void> sendData() {

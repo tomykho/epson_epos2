@@ -101,6 +101,9 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
             case "getStatus":
                 getStatus(call, result);
                 break;
+            case "addCommand":
+                addCommand(call, result);
+                break;
             case "sendData":
                 sendData(call, result);
                 break;
@@ -290,127 +293,34 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         result.success(status);
     }
 
-    private void sendData(MethodCall call, Result result) {
+    private void addCommand(MethodCall call, Result result) {
         if (mPrinter == null) {
             return;
         }
-        if (!createReceiptData()) {
-            return;
-        }
         try {
-            mPrinter.sendData(Printer.PARAM_DEFAULT);
+            mPrinter.addCommand((byte[]) call.arguments);
         }
-        catch (Exception e) {
+        catch (Epos2Exception e) {
             mPrinter.clearCommandBuffer();
-            Log.e("print", "sendData");
+            result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
         }
 
         result.success(null);
     }
 
-    private boolean createReceiptData() {
-        String method = "";
-//        Bitmap logoData = BitmapFactory.decodeResource(getResources(), R.drawable.store);
-        StringBuilder textData = new StringBuilder();
-        final int barcodeWidth = 2;
-        final int barcodeHeight = 100;
-
+    private void sendData(MethodCall call, Result result) {
         if (mPrinter == null) {
-            return false;
+            return;
         }
-
         try {
-            method = "addTextAlign";
-            mPrinter.addTextAlign(Printer.ALIGN_CENTER);
-
-//            method = "addImage";
-//            mPrinter.addImage(logoData, 0, 0,
-//                    logoData.getWidth(),
-//                    logoData.getHeight(),
-//                    Printer.COLOR_1,
-//                    Printer.MODE_MONO,
-//                    Printer.HALFTONE_DITHER,
-//                    Printer.PARAM_DEFAULT,
-//                    Printer.COMPRESS_AUTO);
-
-            method = "addFeedLine";
-            mPrinter.addFeedLine(1);
-            textData.append("THE STORE 123 (555) 555 – 5555\n");
-            textData.append("STORE DIRECTOR – John Smith\n");
-            textData.append("\n");
-            textData.append("7/01/07 16:58 6153 05 0191 134\n");
-            textData.append("ST# 21 OP# 001 TE# 01 TR# 747\n");
-            textData.append("------------------------------\n");
-            method = "addText";
-            mPrinter.addText(textData.toString());
-            textData.delete(0, textData.length());
-
-            textData.append("400 OHEIDA 3PK SPRINGF  9.99 R\n");
-            textData.append("410 3 CUP BLK TEAPOT    9.99 R\n");
-            textData.append("445 EMERIL GRIDDLE/PAN 17.99 R\n");
-            textData.append("438 CANDYMAKER ASSORT   4.99 R\n");
-            textData.append("474 TRIPOD              8.99 R\n");
-            textData.append("433 BLK LOGO PRNTED ZO  7.99 R\n");
-            textData.append("458 AQUA MICROTERRY SC  6.99 R\n");
-            textData.append("493 30L BLK FF DRESS   16.99 R\n");
-            textData.append("407 LEVITATING DESKTOP  7.99 R\n");
-            textData.append("441 **Blue Overprint P  2.99 R\n");
-            textData.append("476 REPOSE 4PCPM CHOC   5.49 R\n");
-            textData.append("461 WESTGATE BLACK 25  59.99 R\n");
-            textData.append("------------------------------\n");
-            method = "addText";
-            mPrinter.addText(textData.toString());
-            textData.delete(0, textData.length());
-
-            textData.append("SUBTOTAL                160.38\n");
-            textData.append("TAX                      14.43\n");
-            method = "addText";
-            mPrinter.addText(textData.toString());
-            textData.delete(0, textData.length());
-
-            method = "addTextSize";
-            mPrinter.addTextSize(2, 2);
-            method = "addText";
-            mPrinter.addText("TOTAL    174.81\n");
-            method = "addTextSize";
-            mPrinter.addTextSize(1, 1);
-            method = "addFeedLine";
-            mPrinter.addFeedLine(1);
-
-            textData.append("CASH                    200.00\n");
-            textData.append("CHANGE                   25.19\n");
-            textData.append("------------------------------\n");
-            method = "addText";
-            mPrinter.addText(textData.toString());
-            textData.delete(0, textData.length());
-
-            textData.append("Purchased item total number\n");
-            textData.append("Sign Up and Save !\n");
-            textData.append("With Preferred Saving Card\n");
-            method = "addText";
-            mPrinter.addText(textData.toString());
-            textData.delete(0, textData.length());
-            method = "addFeedLine";
-            mPrinter.addFeedLine(2);
-
-            method = "addBarcode";
-            mPrinter.addBarcode("01209457",
-                    Printer.BARCODE_CODE39,
-                    Printer.HRI_BELOW,
-                    Printer.FONT_A,
-                    barcodeWidth,
-                    barcodeHeight);
-
-            method = "addCut";
-            mPrinter.addCut(Printer.CUT_FEED);
+            mPrinter.sendData(Printer.PARAM_DEFAULT);
         }
-        catch (Exception e) {
+        catch (Epos2Exception e) {
             mPrinter.clearCommandBuffer();
-            Log.e("createReceiptData", method);
-            return false;
+            result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
         }
-        textData = null;
-        return true;
+
+        result.success(null);
     }
 
     private final ReceiveListener mReceiveListener = new ReceiveListener() {

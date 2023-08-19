@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:epson_epos2/callbacks.dart';
 
 import 'epson_epos2_platform_interface.dart';
@@ -37,6 +39,10 @@ class EpsonEpos2 {
 
   static Future<void> disconnect() {
     return EpsonEpos2Platform.instance.disconnect();
+  }
+
+  static Future<void> addCommand(Uint8List data) {
+    return EpsonEpos2Platform.instance.addCommand(data);
   }
 
   static Future<void> sendData() {

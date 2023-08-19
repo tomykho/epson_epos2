@@ -94,6 +94,11 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   }
 
   @override
+  Future<void> addCommand(Uint8List data) {
+    return methodChannel.invokeMethod('addCommand', data);
+  }
+
+  @override
   Future<void> sendData() {
     return methodChannel.invokeMethod('sendData');
   }
