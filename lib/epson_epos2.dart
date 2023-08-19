@@ -1,4 +1,4 @@
-import 'package:epson_epos2/discovery_callback.dart';
+import 'package:epson_epos2/callbacks.dart';
 
 import 'epson_epos2_platform_interface.dart';
 
@@ -41,5 +41,9 @@ class EpsonEpos2 {
 
   static void setDiscoveryCallback(DiscoveryCallback callback) {
     return EpsonEpos2Platform.instance.setDiscoveryCallback(callback);
+  }
+
+  static void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) {
+    return EpsonEpos2Platform.instance.setPtrStatusChangeCallback(callback);
   }
 }

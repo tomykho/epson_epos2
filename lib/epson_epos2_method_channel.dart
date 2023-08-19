@@ -1,5 +1,5 @@
 import 'package:epson_epos2/device_info.dart';
-import 'package:epson_epos2/discovery_callback.dart';
+import 'package:epson_epos2/callbacks.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +12,7 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   final methodChannel = const MethodChannel('epson_epos2');
 
   DiscoveryCallback? _discoveryCallback;
+  PtrStatusChangeCallback? _ptrStatusChangeCallback;
 
   MethodChannelEpsonEpos2() {
     methodChannel.setMethodCallHandler(_channelHandler);
@@ -25,7 +26,18 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
           var deviceInfo = DeviceInfo.fromJson(map);
           _discoveryCallback?.call(deviceInfo);
         } catch (e) {
-          print(e);
+          if (kDebugMode) {
+            print(e);
+          }
+        }
+        break;
+      case "onPtrStatusChange":
+        try {
+          _ptrStatusChangeCallback?.call(call.arguments);
+        } catch (e) {
+          if (kDebugMode) {
+            print(e);
+          }
         }
         break;
     }
@@ -84,5 +96,10 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   @override
   void setDiscoveryCallback(DiscoveryCallback callback) async {
     _discoveryCallback = callback;
+  }
+
+  @override
+  void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) async {
+    _ptrStatusChangeCallback = callback;
   }
 }

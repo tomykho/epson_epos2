@@ -1,4 +1,4 @@
-import 'package:epson_epos2/discovery_callback.dart';
+import 'package:epson_epos2/callbacks.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'epson_epos2_method_channel.dart';
@@ -63,5 +63,10 @@ abstract class EpsonEpos2Platform extends PlatformInterface {
   void setDiscoveryCallback(DiscoveryCallback callback) {
     throw UnimplementedError(
         'setDiscoveryCallback() has not been implemented.');
+  }
+
+  void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) {
+    throw UnimplementedError(
+        'setPtrStatusChangeCallback() has not been implemented.');
   }
 }

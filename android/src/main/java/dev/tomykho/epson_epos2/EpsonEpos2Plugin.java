@@ -45,7 +45,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     private final HashMap<Integer, String> langModels = new HashMap<>();
     private final HashMap<String, Map<Integer, String>> statuses = new HashMap<>();
     private final Map<Integer, String> errors = new HashMap<>();
-    private final Map<Integer, String> connections = new HashMap<>();
+    private final Map<Integer, String> events = new HashMap<>();
     private Printer  mPrinter = null;
 
     @Override
@@ -60,6 +60,11 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         channel.setMethodCallHandler(null);
         mPrinter.setReceiveEventListener(null);
         mPrinter.setStatusChangeEventListener(null);
+        try {
+            mPrinter.stopMonitor();
+            mPrinter.disconnect();
+        } catch (Epos2Exception ignored) {
+        }
         mPrinter = null;
     }
 
@@ -128,17 +133,8 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
                 throw new RuntimeException(e);
             }
         }
-        Field[] connectionFields = ConnectionListener.class.getFields();
-        for (Field field : connectionFields) {
-            String name = field.getName();
-            try {
-                Integer id = (Integer) field.get(null);
-                connections.put(id, name);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
         Field[] fields = Printer.class.getFields();
+        List<String> excludeEvents = Arrays.asList("EVENT_RECONNECTING", "EVENT_RECONNECT", "EVENT_DISCONNECT");
         for (Field field : fields) {
             String name = field.getName();
             if (field.getType().equals(Integer.TYPE)) {
@@ -176,7 +172,9 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
                     if (name.startsWith("REMOVAL_WAIT_")) {
                         Objects.requireNonNull(statuses.get("removalWaiting")).put(id, name);
                     }
-
+                    if (name.startsWith("EVENT_") && !excludeEvents.contains(name)) {
+                        events.put(id, name);
+                    }
                 } catch (Exception e) {
                     Log.e("name", name);
                     e.printStackTrace();
@@ -237,6 +235,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
             String target = call.argument("target");
             try {
                 mPrinter.connect(target, Printer.PARAM_DEFAULT);
+                mPrinter.startMonitor();
             } catch (Epos2Exception e) {
                 result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
                 return;
@@ -248,6 +247,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     private void disconnect(MethodCall call, Result result) {
         if (mPrinter != null) {
             try {
+                mPrinter.stopMonitor();
                 mPrinter.disconnect();
             } catch (Epos2Exception e) {
                 result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
@@ -307,11 +307,14 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
             new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onDiscovery", map));
         }
     };
-    
+
     private final StatusChangeListener mStatusChangeListener = new StatusChangeListener() {
         @Override
         public void onPtrStatusChange(Printer printer, int i) {
-            Log.e("onPtrStatusChange", i + "___");
+            String event = events.get(i);
+            if (event != null) {
+                new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onPtrStatusChange", event));
+            }
         }
     };
 }

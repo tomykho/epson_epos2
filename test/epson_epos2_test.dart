@@ -1,4 +1,4 @@
-import 'package:epson_epos2/discovery_callback.dart';
+import 'package:epson_epos2/callbacks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:epson_epos2/epson_epos2.dart';
 import 'package:epson_epos2/epson_epos2_platform_interface.dart';
@@ -28,6 +28,8 @@ class MockEpsonEpos2Platform
   Future<void> disconnect() => Future.value();
   @override
   void setDiscoveryCallback(DiscoveryCallback callback) {}
+  @override
+  void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) {}
 }
 
 void main() {
