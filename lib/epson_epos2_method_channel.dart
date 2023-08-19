@@ -94,12 +94,12 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   }
 
   @override
-  void setDiscoveryCallback(DiscoveryCallback callback) async {
+  void setDiscoveryCallback(DiscoveryCallback? callback) async {
     _discoveryCallback = callback;
   }
 
   @override
-  void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) async {
+  void setPtrStatusChangeCallback(PtrStatusChangeCallback? callback) async {
     _ptrStatusChangeCallback = callback;
   }
 }

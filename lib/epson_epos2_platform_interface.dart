@@ -60,12 +60,12 @@ abstract class EpsonEpos2Platform extends PlatformInterface {
     throw UnimplementedError('disconnect() has not been implemented.');
   }
 
-  void setDiscoveryCallback(DiscoveryCallback callback) {
+  void setDiscoveryCallback(DiscoveryCallback? callback) {
     throw UnimplementedError(
         'setDiscoveryCallback() has not been implemented.');
   }
 
-  void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) {
+  void setPtrStatusChangeCallback(PtrStatusChangeCallback? callback) {
     throw UnimplementedError(
         'setPtrStatusChangeCallback() has not been implemented.');
   }

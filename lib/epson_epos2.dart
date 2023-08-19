@@ -39,11 +39,11 @@ class EpsonEpos2 {
     return EpsonEpos2Platform.instance.disconnect();
   }
 
-  static void setDiscoveryCallback(DiscoveryCallback callback) {
+  static void setDiscoveryCallback(DiscoveryCallback? callback) {
     return EpsonEpos2Platform.instance.setDiscoveryCallback(callback);
   }
 
-  static void setPtrStatusChangeCallback(PtrStatusChangeCallback callback) {
+  static void setPtrStatusChangeCallback(PtrStatusChangeCallback? callback) {
     return EpsonEpos2Platform.instance.setPtrStatusChangeCallback(callback);
   }
 }
