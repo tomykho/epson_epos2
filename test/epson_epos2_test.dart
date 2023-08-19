@@ -9,9 +9,23 @@ class MockEpsonEpos2Platform
     with MockPlatformInterfaceMixin
     implements EpsonEpos2Platform {
   @override
+  Future<void> init() => Future.value();
+  @override
   Future<void> startDiscovery() => Future.value();
   @override
   Future<void> stopDiscovery() => Future.value();
+  @override
+  Future<Map<int, String>?> getSeries() => Future.value();
+  @override
+  Future<Map<int, String>?> getLangModels() => Future.value();
+  @override
+  Future<void> setPrinter(int series, int langModel) => Future.value();
+  @override
+  Future<Map<String, String>?> getStatus() => Future.value();
+  @override
+  Future<void> connect(String target) => Future.value();
+  @override
+  Future<void> disconnect() => Future.value();
   @override
   void setDiscoveryCallback(DiscoveryCallback callback) {}
 }

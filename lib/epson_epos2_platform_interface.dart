@@ -24,12 +24,40 @@ abstract class EpsonEpos2Platform extends PlatformInterface {
     _instance = instance;
   }
 
+  Future<void> init() {
+    throw UnimplementedError('startDiscovery() has not been implemented.');
+  }
+
   Future<void> startDiscovery() {
     throw UnimplementedError('startDiscovery() has not been implemented.');
   }
 
   Future<void> stopDiscovery() {
     throw UnimplementedError('stopDiscovery() has not been implemented.');
+  }
+
+  Future<Map<int, String>?> getSeries() {
+    throw UnimplementedError('getSeries() has not been implemented.');
+  }
+
+  Future<Map<int, String>?> getLangModels() {
+    throw UnimplementedError('getLangModels() has not been implemented.');
+  }
+
+  Future<void> setPrinter(int series, int langModel) {
+    throw UnimplementedError('getStatus() has not been implemented.');
+  }
+
+  Future<Map<String, String>?> getStatus() {
+    throw UnimplementedError('getStatus() has not been implemented.');
+  }
+
+  Future<void> connect(String target) {
+    throw UnimplementedError('connect() has not been implemented.');
+  }
+
+  Future<void> disconnect() {
+    throw UnimplementedError('disconnect() has not been implemented.');
   }
 
   void setDiscoveryCallback(DiscoveryCallback callback) {

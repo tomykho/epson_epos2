@@ -32,6 +32,11 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   }
 
   @override
+  Future<void> init() async {
+    return methodChannel.invokeMethod('init');
+  }
+
+  @override
   Future<void> startDiscovery() async {
     return methodChannel.invokeMethod('startDiscovery');
   }
@@ -39,6 +44,41 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   @override
   Future<void> stopDiscovery() async {
     return methodChannel.invokeMethod('stopDiscovery');
+  }
+
+  @override
+  Future<Map<int, String>?> getSeries() async {
+    return methodChannel.invokeMapMethod('getSeries');
+  }
+
+  @override
+  Future<Map<int, String>?> getLangModels() async {
+    return methodChannel.invokeMapMethod('getLangModels');
+  }
+
+  @override
+  Future<void> setPrinter(int series, int langModel) async {
+    return methodChannel.invokeMethod('setPrinter', {
+      "series": series,
+      "langModel": langModel,
+    });
+  }
+
+  @override
+  Future<Map<String, String>?> getStatus() async {
+    return methodChannel.invokeMapMethod('getStatus');
+  }
+
+  @override
+  Future<void> connect(String target) {
+    return methodChannel.invokeMethod('connect', {
+      "target": target,
+    });
+  }
+
+  @override
+  Future<void> disconnect() async {
+    return methodChannel.invokeMethod('disconnect');
   }
 
   @override
