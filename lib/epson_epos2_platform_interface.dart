@@ -60,6 +60,10 @@ abstract class EpsonEpos2Platform extends PlatformInterface {
     throw UnimplementedError('disconnect() has not been implemented.');
   }
 
+  Future<void> sendData() {
+    throw UnimplementedError('sendData() has not been implemented.');
+  }
+
   void setDiscoveryCallback(DiscoveryCallback? callback) {
     throw UnimplementedError(
         'setDiscoveryCallback() has not been implemented.');

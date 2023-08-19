@@ -94,6 +94,11 @@ class MethodChannelEpsonEpos2 extends EpsonEpos2Platform {
   }
 
   @override
+  Future<void> sendData() {
+    return methodChannel.invokeMethod('sendData');
+  }
+
+  @override
   void setDiscoveryCallback(DiscoveryCallback? callback) async {
     _discoveryCallback = callback;
   }

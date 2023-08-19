@@ -27,6 +27,8 @@ class MockEpsonEpos2Platform
   @override
   Future<void> disconnect() => Future.value();
   @override
+  Future<void> sendData() => Future.value();
+  @override
   void setDiscoveryCallback(DiscoveryCallback? callback) {}
   @override
   void setPtrStatusChangeCallback(PtrStatusChangeCallback? callback) {}

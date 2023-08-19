@@ -39,6 +39,10 @@ class EpsonEpos2 {
     return EpsonEpos2Platform.instance.disconnect();
   }
 
+  static Future<void> sendData() {
+    return EpsonEpos2Platform.instance.sendData();
+  }
+
   static void setDiscoveryCallback(DiscoveryCallback? callback) {
     return EpsonEpos2Platform.instance.setDiscoveryCallback(callback);
   }
