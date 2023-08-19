@@ -59,7 +59,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
         mPrinter.setReceiveEventListener(null);
-        mPrinter.setConnectionEventListener(null);
+        mPrinter.setStatusChangeEventListener(null);
         mPrinter = null;
     }
 
@@ -223,7 +223,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
             try {
                 mPrinter = new Printer(series, langModel, context);
                 mPrinter.setReceiveEventListener(mReceiveListener);
-                mPrinter.setConnectionEventListener(mConnectionListener);
+                mPrinter.setStatusChangeEventListener(mStatusChangeListener);
             } catch (Epos2Exception e) {
                 result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
                 return;
@@ -307,11 +307,11 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
             new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onDiscovery", map));
         }
     };
-    private final ConnectionListener mConnectionListener = new ConnectionListener() {
+    
+    private final StatusChangeListener mStatusChangeListener = new StatusChangeListener() {
         @Override
-        public void onConnection(Object o, int id) {
-            String event = connections.get(id);
-            new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onConnection", event));
+        public void onPtrStatusChange(Printer printer, int i) {
+            Log.e("onPtrStatusChange", i + "___");
         }
     };
 }
