@@ -303,6 +303,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         catch (Epos2Exception e) {
             mPrinter.clearCommandBuffer();
             result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
+            return;
         }
 
         result.success(null);
@@ -318,6 +319,7 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
         catch (Epos2Exception e) {
             mPrinter.clearCommandBuffer();
             result.error("" + e.getErrorStatus(), errors.get(e.getErrorStatus()), e);
+            return;
         }
 
         result.success(null);
