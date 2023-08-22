@@ -328,7 +328,9 @@ public class EpsonEpos2Plugin implements FlutterPlugin, MethodCallHandler {
     private final ReceiveListener mReceiveListener = new ReceiveListener() {
         @Override
         public void onPtrReceive(Printer printer, int i, PrinterStatusInfo printerStatusInfo, String s) {
-
+            if (mPrinter != null) {
+                mPrinter.clearCommandBuffer();
+            }
         }
     };
 
